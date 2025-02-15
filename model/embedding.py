@@ -54,7 +54,7 @@ class TemporalEmbedding(nn.Module):
     
     def forward(self,x):
         x = x.long()
-        minute_x = self.minute_x(x[:,:,4])
+        minute_x = self.minute_embed(x[:,:,4])
         hour_x = self.hour_embed(x[:,:,3])
         weekday_x = self.weekday_embed(x[:,:,2])
         day_x = self.day_embed(x[:,:,1])
@@ -73,7 +73,7 @@ class DataEmbedding(nn.Module):
         self.dropout = nn.Dropout(p=dropout)
     
     def forward(self,x,x_mark):
-        x = self.value_embedding(x) + self.temporal_embedding(x_mark) + self.positional_embedding(x)
+        x = self.value_embedding(x) + self.temporal_embedding(x_mark) + self.position_embedding(x)
         return self.dropout(x)
 
         

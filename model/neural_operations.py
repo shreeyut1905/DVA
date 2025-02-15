@@ -80,10 +80,10 @@ class Conv2D(nn.Conv2d):
 
         self.data_init = data_init
         self.init_done = False
-        self.weight_normalized = self.normalize_weight()
+        self.weight_normalized = self.normalized_weight()
 
     def forward(self,x):
-        self.weight_normalized = self.normalize_weight()
+        self.weight_normalized = self.normalized_weight()
         bias = self.bias 
         return F.conv2d(x,self.weight_normalized,bias,self.stride,self.padding,self.dilation,self.groups)
     
@@ -244,7 +244,7 @@ class InvertedResidual(nn.Module):
         self.stride = abs(self.stride)
         groups = hidden_dim if g == 0 else g 
 
-        layers0 = [nn.UpsamplingNearest2d(sclae_factor=2)] if self.upsample else []
+        layers0 = [nn.UpsamplingNearest2d(scale_factor=2)] if self.upsample else []
         layers = [get_batchnorm(Cin,eps=BN_EPS,momentum=0.05),
                   ConvBNSwish(Cin,hidden_dim,k=1),
                   ConvBNSwish(hidden_dim,hidden_dim,stride=self.stride,groups=groups,k=k,dilation=dil),

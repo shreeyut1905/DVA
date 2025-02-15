@@ -33,11 +33,11 @@ class diffusion_generate(nn.Module):
         )
         self.projection = nn.Linear(args.embedding_dimension+args.hidden_size,args.embedding_dimension)
 
-        def forward(self,past_time_feat,future_time_feat,t):
-            time_feat , _  =self.rnn(past_time_feat)
-            input = torch.cat([time_feat,past_time_feat],dim=-1)
-            output , y_noisy = self.diffusion.log_prob(input,future_time_feat,t)
-            return output, y_noisy
+    def forward(self,past_time_feat,future_time_feat,t):
+        time_feat , _  =self.rnn(past_time_feat)
+        input = torch.cat([time_feat,past_time_feat],dim=-1)
+        output , y_noisy = self.diffusion.log_prob(input,future_time_feat,t)
+        return output, y_noisy
 
 class denoise_net(nn.Module):
     def __init__(self,args):
@@ -53,7 +53,7 @@ class denoise_net(nn.Module):
 
         self.diffusion_gen = diffusion_generate(args)
 
-        self.embedding = DataEmbedding(args)
+        
 
         self.embedding = DataEmbedding(args.input_dim,args.embedding_dimension,args.dropout_rate)
     def extract(self,a,t,x_shape):

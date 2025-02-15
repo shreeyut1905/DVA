@@ -52,8 +52,8 @@ class Dataset_Custom(Dataset):
         train_data = df_data[border1s[0]:border2s[0]]
         self.scaler.fit(train_data.values)
         data = self.scaler.transform(df_data.values)
-
-        df_stamp = pd.DateTimeIndex(df_raw[border1:border2]['date'])
+        
+        df_stamp = pd.DatetimeIndex(df_raw[border1:border2]['date'])
         data_stamp = time_features(df_stamp)
 
         self.data_x  = data[border1:border2]

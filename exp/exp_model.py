@@ -28,7 +28,7 @@ warnings.filterwarnings("ignore")
 class Exp_Model(object):
     def __init__(self,args):
         self.args = args 
-        self.device = self._aquire_device()
+        self.device = self._aquire_devices()
         self.gen_net = diffusion_generate(args).to(self.device)
         self.denoise_net = denoise_net(args).to(self.device)
         self.diff_step= args.diff_steps
@@ -43,26 +43,26 @@ class Exp_Model(object):
             device = torch.device('cpu')
             print("Use CPU")
         return device
-    def _get_data(self,flag):
-        args = self.args 
+    def _get_data(self, flag):
+        args = self.args
         Data = Dataset_Custom
         if flag == 'test' or flag == 'val':
-            shuffle_flag  = False; drop_last = True; batch_size = args.batch_size
+            shuffle_flag = False; drop_last = True; batch_size = args.batch_size
         else:
-            shuffle_flag = True; drop_last =  True ; batch_size = args.batch_size
+            shuffle_flag = True; drop_last = True; batch_size = args.batch_size
         data_set = Data(
-            root_path = args.root_path,
-            data = args.data_path,
-            flag = flag,
-            size = [args.sequence_length,args.prediction_length],
+            root_path=args.root_path,
+            data_path=args.data_path,
+            flag=flag,
+            size=[args.sequence_length, args.prediction_length],
         )
-        print(flag,len(data_set))
+        print(flag, len(data_set))
         data_loader = DataLoader(
             data_set,
-            batch_size = batch_size,
-            shuffle=  shuffle_flag,
-            num_workers = args.num_workers,
-            drop_last = drop_last
+            batch_size=batch_size,
+            shuffle=shuffle_flag,
+            num_workers=args.num_workers,
+            drop_last=drop_last
         )
         return data_set,data_loader
     def _select_optimizer(self):
@@ -95,7 +95,7 @@ class Exp_Model(object):
         path = os.path.join(self.args.checkpoints,setting)
         if not os.path.exists(path):
             os.makedirs(path)
-        early_stopping  = EarlyStopping(patience = self.args.patience,verbose=True)
+        early_stopping = EarlyStopping(patience=self.args.patience, verbose=True)
         denoise_optim = self._select_optimizer()
         criterion = self._select_criterion()
         train = []

@@ -120,7 +120,7 @@ class Encoder(nn.Module):
         prior_ftr0_size = (int(c_scaling*self.num_channels_dec),args.prediction_length//spatial_scaling,
                            (args.embedding_dimension + args.hidden_size +1)//spatial_scaling)
         self.prior_ftr0 = nn.Parameter(torch.rand(size=prior_ftr0_size),requires_grad=True)
-        self.z0_size  =[self.num_latent_per_group,args.rpediction_length//spatial_scaling,(args.embedding_dimensions + args.hidden_size + 1)//spatial_scaling]
+        self.z0_size  =[self.num_latent_per_group,args.prediction_length//spatial_scaling,(args.embedding_dimension + args.hidden_size + 1)//spatial_scaling]
 
         self.pre_process = self.init_pre_process(args.mult)
         self.enc_tower = self.init_encoder_tower(self.mult)
@@ -165,9 +165,9 @@ class Encoder(nn.Module):
             cell = Cell(num_c,num_c,cell_type='normal_enc',arch=arch,use_se = self.use_se)
             enc_tower.append(cell)
 
-            if not (g== self.group_per_scale -1):
-                num_ce = int(self.num_channel_enc*mult)
-                num_cd = int(self.num_channel_dec * mult)
+            if not (g== self.groups_per_scale -1):
+                num_ce = int(self.num_channels_enc*mult)
+                num_cd = int(self.num_channels_dec * mult)
                 cell   = EncCombinerCell(num_ce,num_cd,num_ce,cell_type='combiner_enc')
         self.mult = mult 
         return enc_tower 
@@ -188,7 +188,7 @@ class Encoder(nn.Module):
         enc_sampler = nn.ModuleList()
         dec_sampler = nn.ModuleList()
         for g in range(self.groups_per_scale):
-            num_c = int(self.num_channel_enc * mult)
+            num_c = int(self.num_channels_enc * mult)
             cell = Conv2D(num_c,2*self.num_latent_per_group,kernel_size=3,padding=1,bias=True)
             enc_sampler.append(cell)
             if g!= 0:

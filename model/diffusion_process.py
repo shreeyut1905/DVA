@@ -38,7 +38,7 @@ def noise_like(shape,device,repeat=False):
     noise = lambda: torch.randn(shape,device=device)
     return repeat_noise() if repeat else noise()
 
-class GaussianDiffusion(nn.Moudule):
+class GaussianDiffusion(nn.Module):
     def __init__(
             self,
             bvae,
@@ -48,14 +48,14 @@ class GaussianDiffusion(nn.Moudule):
             diff_steps = 100,
             betas = None,
             scale = 0.1,
-            beta_scheduler = "linear"
+            beta_schedule = "linear"
     ):
         super().__init__()
         self.generative = bvae
         self.scale = scale
         self.beta_start = beta_start
         self.beta_end = beta_end
-        betas = get_beta_schedule(beta_scheduler,beta_start,beta_end,diff_steps)
+        betas = get_beta_schedule(beta_schedule,beta_start,beta_end,diff_steps)
         alphas = 1.0 - betas
         alphas_cumprod = np.cumprod(alphas)
 
@@ -69,7 +69,7 @@ class GaussianDiffusion(nn.Moudule):
         self.register_buffer("betas",to_torch(betas))
         self.register_buffer("alphas_cumprod",to_torch(alphas_cumprod))
         self.register_buffer("sqrt_alphas_cumprod",to_torch(np.sqrt(alphas_cumprod)))
-        self.register_buffer("sqrt_alpha_target_cumprod",to_torch(np.sqrt(alphas_target_cumprod)))
+        self.register_buffer("sqrt_alphas_target_cumprod",to_torch(np.sqrt(alphas_target_cumprod)))
         self.register_buffer(
             "sqrt_one_minus_alphas_cumprod",to_torch(np.sqrt(1.0 - alphas_cumprod))
         )
