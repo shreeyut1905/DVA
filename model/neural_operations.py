@@ -196,9 +196,9 @@ class EncCombinerCell(nn.Module):
         out  = self.conv(out)
         return out 
     
-class DeCombinerCell(nn.Module):
+class DecCombinerCell(nn.Module):
     def __init__(self,Cin1,Cin2,Cout,cell_type):
-        super(DeCombinerCell,self).__init__()
+        super(DecCombinerCell,self).__init__()
         self.cell_type = cell_type
         self.conv = Conv2D(Cin1 + Cin2,Cout,kernel_size=1,stride=1,padding=0,bias=True)
     def forward(self,x1,x2):
